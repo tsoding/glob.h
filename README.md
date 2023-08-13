@@ -17,7 +17,7 @@ uint32_t *decode_utf8(const char *message);
 
 int main(void)
 {
-    if (glob(decode_utf8("*.c"), decode_utf8("main.c"))) {
+    if (glob(decode_utf8("*.c"), decode_utf8("main.c")) == GLOB_MATCHED) {
         printf("OK\n");
     } else {
         printf("FAIL\n");
