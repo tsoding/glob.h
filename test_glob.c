@@ -51,6 +51,9 @@ void check_glob_located(const char *file, int line, const char *pattern, const c
         printf("%s:%d: FAILURE! Expected %s", file, line, glob_result_display(expected));
         exit(1);
     }
+
+    free(pattern_utf32);
+    free(text_utf32);
 }
 
 #define check_glob(pattern, text, expected) check_glob_located(__FILE__, __LINE__, pattern, text, expected)
