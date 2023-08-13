@@ -46,16 +46,17 @@ Glob_Result glob(const uint32_t *pattern, const uint32_t *text)
         break;
 
         case '[': {
-            pattern += 1; // skipping [
             bool matched = false;
             bool negate = false;
 
-            if (*pattern == '\0') return GLOB_SYNTAX_ERROR;
+            pattern += 1; // skipping [
+            if (*pattern == '\0') return GLOB_SYNTAX_ERROR; // unclosed [
+
             if (*pattern == '!') {
                 negate = true;
                 pattern += 1;
+                if (*pattern == '\0') return GLOB_SYNTAX_ERROR; // unclosed [
             }
-            if (*pattern == '\0') return GLOB_SYNTAX_ERROR;
 
             uint32_t prev = *pattern;
             matched |= prev == *text;
@@ -70,7 +71,7 @@ Glob_Result glob(const uint32_t *pattern, const uint32_t *text)
                         matched |= '-' == *text;
                         break;
                     case '\0':
-                        return GLOB_SYNTAX_ERROR;
+                        return GLOB_SYNTAX_ERROR; // unclosed [
                     default: {
                         matched |= prev <= *text && *text <= *pattern;
                         prev = *pattern;
@@ -87,7 +88,7 @@ Glob_Result glob(const uint32_t *pattern, const uint32_t *text)
                 }
             }
 
-            if (*pattern != ']') return GLOB_SYNTAX_ERROR;
+            if (*pattern != ']') return GLOB_SYNTAX_ERROR; // unclosed [
             if (negate) matched = !matched;
             if (!matched) return GLOB_UNMATCHED;
 
@@ -98,7 +99,7 @@ Glob_Result glob(const uint32_t *pattern, const uint32_t *text)
 
         case '\\':
             pattern += 1;
-            if (*pattern == '\0') return GLOB_SYNTAX_ERROR;
+            if (*pattern == '\0') return GLOB_SYNTAX_ERROR; // unfinished escape
         // fallthrough
         default: {
             if (*pattern == *text) {
