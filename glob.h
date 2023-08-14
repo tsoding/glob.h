@@ -1,6 +1,10 @@
 #ifndef GLOB_H_
 #define GLOB_H_
 
+#include <assert.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 typedef enum {
     GLOB_UNMATCHED = 0,
     GLOB_MATCHED,
