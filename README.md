@@ -61,8 +61,7 @@ int main(void)
 ## Testing
 
 ```console
-$ ./build.sh
-$ ./test_glob
+$ ./test.sh
 ```
 ## Coverage
 
