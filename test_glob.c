@@ -146,5 +146,10 @@ int main(void)
     check_glob("\\*", "*", GLOB_MATCHED);
     printf("\n");
     check_glob("[Пп]ривет, [Мм]ир", "Привет, Мир", GLOB_MATCHED);
+    printf("\n");
+    check_glob("[", "aaaaa", GLOB_SYNTAX_ERROR);
+    check_glob("[!", "aaaaa", GLOB_SYNTAX_ERROR);
+    check_glob("[--", "aaaaa", GLOB_SYNTAX_ERROR);
+    check_glob("\\", "aaaaa", GLOB_SYNTAX_ERROR);
     return 0;
 }
