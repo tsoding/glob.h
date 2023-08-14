@@ -4,18 +4,20 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #if !defined(GLOB_MALLOC) && !defined(GLOB_FREE)
 #include <stdlib.h>
 #define GLOB_MALLOC malloc
 #define GLOB_FREE free
-#else
+#elif !defined(GLOB_MALLOC) || !defined(GLOB_FREE)
 #error "You must define both GLOB_MALLOC and GLOB_FREE"
 #endif
 
 // Matched - falsy
 // Not matched for any reason - truthy
 typedef enum {
+    GLOB_OOM_ERROR      = -4,
     GLOB_ENCODING_ERROR = -3,
     GLOB_SYNTAX_ERROR   = -2,
     GLOB_UNMATCHED      = -1,
@@ -216,10 +218,11 @@ ConversionResult ConvertUTF8toUTF32 (
 
 // HERE ENDS ConvertUTF CODE //////////////////////////////
 
-static ConversionResult decode_utf8_with_malloc(const char *in, uint32_t **out)
+static Glob_Result decode_utf8_with_malloc(const char *in, uint32_t **out)
 {
     size_t n = strlen(in);
     *out = GLOB_MALLOC(sizeof(uint32_t)*(n + 1));
+    if (*out == NULL) return GLOB_OOM_ERROR;
     assert(*out != NULL && "Buy more RAM lol");
     memset(*out, 0, sizeof(uint32_t)*(n + 1));
     uint32_t *out_end = *out;
@@ -227,7 +230,8 @@ static ConversionResult decode_utf8_with_malloc(const char *in, uint32_t **out)
     ConversionResult result = ConvertUTF8toUTF32(
                                   (const UTF8**) &in, (const UTF8*) (in + n),
                                   (UTF32**) &out_end, (UTF32*) out_end + n, 0);
-    return result;
+    if (result != conversionOK) return GLOB_ENCODING_ERROR;
+    return GLOB_MATCHED;
 }
 
 const char *glob_result_display(Glob_Result result)
@@ -237,6 +241,7 @@ const char *glob_result_display(Glob_Result result)
     case GLOB_MATCHED:        return "GLOB_MATCHED";
     case GLOB_SYNTAX_ERROR:   return "GLOB_SYNTAX_ERROR";
     case GLOB_ENCODING_ERROR: return "GLOB_ENCODING_ERROR";
+    case GLOB_OOM_ERROR:      return "GLOB_OOM_ERROR";
     default: assert(0 && "unreachable");
     }
 }
@@ -244,18 +249,13 @@ const char *glob_result_display(Glob_Result result)
 Glob_Result glob_utf8(const char *pattern, const char *text)
 {
     Glob_Result result = 0;
-
     uint32_t *pattern_utf32 = NULL;
     uint32_t *text_utf32 = NULL;
-    if (decode_utf8_with_malloc(pattern, &pattern_utf32) != conversionOK) {
-        result = GLOB_ENCODING_ERROR;
-        goto defer;
-    }
-    if (decode_utf8_with_malloc(text, &text_utf32) != conversionOK) {
-        result = GLOB_ENCODING_ERROR;
-        goto defer;
-    }
 
+    result = decode_utf8_with_malloc(pattern, &pattern_utf32);
+    if (result) goto defer;
+    result = decode_utf8_with_malloc(text, &text_utf32);
+    if (result) goto defer;
     result = glob_utf32(pattern_utf32, text_utf32);
 
 defer:
