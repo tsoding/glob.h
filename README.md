@@ -3,15 +3,14 @@
 ## Usage
 
 ```c
+#include <stdio.h>
+#include <string.h>
 #define GLOB_IMPLEMENTATION
 #include "glob.h"
 
-// Your custom UTF8 decode. Check test_glob.c for an example of that.
-uint32_t *decode_utf8(const char *message);
-
 int main(void)
 {
-    if (glob(decode_utf8("*.c"), decode_utf8("main.c")) == GLOB_MATCHED) {
+    if (!glob_utf8("*.c", "main.c")) {
         printf("OK\n");
     } else {
         printf("FAIL\n");

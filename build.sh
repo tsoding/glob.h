@@ -2,4 +2,4 @@
 
 set -xe
 
-clang -Wall -Wextra -Wswitch-enum -ggdb -o test_glob test_glob.c ConvertUTF.c
+clang -Wall -Wextra -Wswitch-enum -ggdb -o test_glob test_glob.c
