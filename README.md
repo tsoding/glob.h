@@ -1,11 +1,5 @@
 # Simple Header-Only Implementation of Glob Matching
 
-## Testing
-
-```console
-$ ./build.sh
-$ ./test_glob
-```
 ## Usage
 
 ```c
@@ -24,4 +18,18 @@ int main(void)
     }
     return 0;
 }
+```
+
+## Testing
+
+```console
+$ ./build.sh
+$ ./test_glob
+```
+## Coverage
+
+Very useful to see what's not tested yet. Requires [clang](https://clang.llvm.org/).
+
+```console
+$ ./coverage.sh
 ```
