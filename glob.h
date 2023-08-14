@@ -1,7 +1,6 @@
 #ifndef GLOB_H_
 #define GLOB_H_
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
@@ -241,8 +240,8 @@ const char *glob_result_display(Glob_Result result)
     case GLOB_SYNTAX_ERROR:   return "GLOB_SYNTAX_ERROR";
     case GLOB_ENCODING_ERROR: return "GLOB_ENCODING_ERROR";
     case GLOB_OOM_ERROR:      return "GLOB_OOM_ERROR";
-    default: assert(0 && "unreachable");
     }
+    return NULL;
 }
 
 Glob_Result glob_utf8(const char *pattern, const char *text)
