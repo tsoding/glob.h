@@ -25,7 +25,7 @@ int main(void)
 to decode UTF-8. If you want to avoid that you can define your custom temporary
 allocator.
 
-```console
+```c
 #include <stdio.h>
 
 char temp[1024];
