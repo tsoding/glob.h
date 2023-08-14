@@ -26,6 +26,7 @@ const char *glob_result_display(Glob_Result result);
 Glob_Result glob_utf8(const char *pattern, const char *text);
 Glob_Result glob_utf32(const uint32_t *pattern, const uint32_t *text);
 // TODO: implement glob_utf16
+// TODO: support for non-NULL-terminated (a.k.a sized) strings
 
 #endif // GLOB_H_
 
