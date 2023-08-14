@@ -22,7 +22,7 @@ int main(void)
 ## Custom Allocator
 
 `glob_utf8` allocates and deallocates memory on each call because it needs to
-to decode UTF-8. If you want to avoid that you can define your custom temporary
+decode UTF-8. If you want to avoid that you can define a custom temporary
 allocator.
 
 ```c
