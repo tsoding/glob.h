@@ -223,7 +223,6 @@ static Glob_Result decode_utf8_with_malloc(const char *in, uint32_t **out)
     size_t n = strlen(in);
     *out = GLOB_MALLOC(sizeof(uint32_t)*(n + 1));
     if (*out == NULL) return GLOB_OOM_ERROR;
-    assert(*out != NULL && "Buy more RAM lol");
     memset(*out, 0, sizeof(uint32_t)*(n + 1));
     uint32_t *out_end = *out;
 
@@ -231,7 +230,7 @@ static Glob_Result decode_utf8_with_malloc(const char *in, uint32_t **out)
                                   (const UTF8**) &in, (const UTF8*) (in + n),
                                   (UTF32**) &out_end, (UTF32*) out_end + n, 0);
     if (result != conversionOK) return GLOB_ENCODING_ERROR;
-    return GLOB_MATCHED;
+    return 0;
 }
 
 const char *glob_result_display(Glob_Result result)
